@@ -12,12 +12,12 @@ export function Quote({ author, source, link, children }: QuoteProps) {
   const authorConfig = authors[author as keyof typeof authors] || authors.default;
   
   return (
-    <blockquote className={`border-l-4 ${authorConfig.borderColor} pl-6 py-4 my-6 ${authorConfig.bgColor} italic`}>
+    <div className={`border-l-4 ${authorConfig.borderColor} pl-6 pb-3 my-4`}>
       <div className={`${authorConfig.textColor} text-lg leading-relaxed`}>
         {children}
       </div>
       {(author || source) && (
-        <footer className="mt-3 text-sm not-italic">
+        <footer className="mt-2 text-sm">
           <cite className={authorConfig.textColor}>
             {author && <span className="font-medium">{author}</span>}
             {source && (
@@ -35,6 +35,6 @@ export function Quote({ author, source, link, children }: QuoteProps) {
           </cite>
         </footer>
       )}
-    </blockquote>
+    </div>
   );
 }
