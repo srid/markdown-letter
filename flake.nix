@@ -2,7 +2,7 @@
   description = "Markdown Letter - Convert MDX to self-contained HTML";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-parts.url = "github:hercules-ci/flake-parts";
   };
 
