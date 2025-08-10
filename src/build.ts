@@ -43,8 +43,7 @@ async function buildCSS(): Promise<string> {
 function createHTMLTemplate(
   title: string,
   css: string,
-  body: string,
-  frontMatter: FrontMatter
+  body: string
 ): string {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -52,19 +51,12 @@ function createHTMLTemplate(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
-  ${frontMatter.description ? `<meta name="description" content="${frontMatter.description}">` : ''}
-  ${frontMatter.author ? `<meta name="author" content="${frontMatter.author}">` : ''}
   <style>
     ${css}
   </style>
 </head>
 <body>
   <div class="letter-container">
-    <header class="letter-header">
-      <h1 class="text-3xl font-bold text-gray-900 mb-2">${title}</h1>
-      ${frontMatter.author ? `<p class="text-gray-600">By ${frontMatter.author}</p>` : ''}
-      ${frontMatter.date ? `<p class="text-gray-500 text-sm">${frontMatter.date}</p>` : ''}
-    </header>
     <main class="letter-content">
       ${body}
     </main>
@@ -108,8 +100,8 @@ async function buildHTML(inputPath: string, outputPath: string): Promise<void> {
     const css = await buildCSS();
     
     // Create final HTML
-    const title = frontMatter.title || basename(inputPath, extname(inputPath));
-    const html = createHTMLTemplate(title, css, bodyHTML, frontMatter);
+    const title = basename(inputPath, extname(inputPath));
+    const html = createHTMLTemplate(title, css, bodyHTML);
     
     // Ensure output directory exists
     await mkdir(dirname(outputPath), { recursive: true });
