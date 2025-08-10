@@ -12,7 +12,7 @@ import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
 
 // Import components
-import { Quote, Callout } from './components/index.js';
+import { Quote } from './components/index.js';
 
 interface FrontMatter {
   title?: string;
@@ -23,7 +23,6 @@ interface FrontMatter {
 
 const mdxComponents = {
   Quote,
-  Callout,
 };
 
 async function buildCSS(): Promise<string> {
@@ -40,16 +39,6 @@ async function buildCSS(): Promise<string> {
   return result.css;
 }
 
-async function compileMDX(mdxContent: string) {
-  const compiled = await compile(mdxContent, {
-    outputFormat: 'function-body',
-    development: false,
-    jsxImportSource: 'react',
-    providerImportSource: '#',
-  });
-  
-  return String(compiled);
-}
 
 function createHTMLTemplate(
   title: string,

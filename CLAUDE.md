@@ -1,5 +1,9 @@
 This project is called "Markdown Letter". It enables the user to compose their email in a Markdown file, and generate a *self-contained* and single-file HTML out of it that is rendered nicely readability. The reader would then attach this HTML file when sending email to someone, who then will open the HTML file locally to view it. This enables the user to write big articles with footnotes and heading sections easily. 
 
+# Dev
+
+- Test your changes using `just build` always.
+
 # Milestones
 
 ## Milestone 1
