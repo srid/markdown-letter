@@ -19,22 +19,53 @@ just open
 
 ## Features
 
-- **MDX Components**: Quote, Callout with proper styling
+- **MDX Components**: Quote with author-specific styling
 - **Self-contained HTML**: No external dependencies
 - **Email-ready**: Attach generated HTML files
 - **Tailwind Styling**: Professional typography
+- **Author Colors**: Unique color themes for different authors
 
 ## Components
 
+### Quote
+
+The Quote component supports author-specific color themes defined in `src/config/authors.json`:
+
 ```mdx
-<Quote author="Name" source="Book" year="2024" link="https://...">
+<Quote author="Daniel Kahneman" source="Thinking, Fast and Slow">
 Quote text here.
 </Quote>
 
-<Callout type="info|warning|error|success" title="Title">
-Callout content.
-</Callout>
+<Quote author="Amos Tversky" source="Book Title" link="https://example.com">
+Quote with clickable source link.
+</Quote>
 ```
+
+**Props:**
+- `author` (optional): Author name - must match one defined in authors.json for custom styling
+- `source` (optional): Book/article title
+- `link` (optional): URL to make the source clickable
+
+**Supported Authors:**
+Current authors in config with unique color themes:
+- Richard (amber/brown)
+- Vineeto (green)
+
+Authors not in the config will use the default gray theme.
+
+**Adding New Authors:**
+To add a new author, simply edit `src/config/authors.json` and add an entry like:
+```json
+{
+  "AuthorName": {
+    "color": "blue",
+    "borderColor": "border-blue-600", 
+    "bgColor": "bg-blue-50",
+    "textColor": "text-blue-800"
+  }
+}
+```
+The build system automatically includes the color classes - no other files need to be modified.
 
 ## Commands
 

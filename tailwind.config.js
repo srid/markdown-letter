@@ -1,6 +1,23 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+// Dynamically generate safelist from authors.json
+function generateSafelist() {
+  const authorsPath = join(process.cwd(), 'src/config/authors.json');
+  const authors = JSON.parse(readFileSync(authorsPath, 'utf-8'));
+  
+  const safelist = [];
+  for (const author of Object.values(authors)) {
+    safelist.push(author.borderColor, author.bgColor, author.textColor);
+  }
+  
+  return safelist;
+}
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./src/**/*.{ts,tsx,mdx}'],
+  safelist: generateSafelist(),
   theme: {
     extend: {
       typography: {

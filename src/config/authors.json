@@ -1,0 +1,20 @@
+{
+  "Richard": {
+    "color": "amber",
+    "borderColor": "border-amber-700",
+    "bgColor": "bg-amber-50",
+    "textColor": "text-amber-900"
+  },
+  "Vineeto": {
+    "color": "green",
+    "borderColor": "border-green-600",
+    "bgColor": "bg-green-50",
+    "textColor": "text-green-800"
+  },
+  "default": {
+    "color": "gray",
+    "borderColor": "border-gray-500",
+    "bgColor": "bg-gray-50",
+    "textColor": "text-gray-900"
+  }
+}
