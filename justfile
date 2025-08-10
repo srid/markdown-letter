@@ -24,9 +24,17 @@ format:
 build:
     npm run build
 
+# Watch and rebuild example.mdx on changes
+watch:
+    npm run dev
+
 # Build a specific MDX file
 build-file file:
     npx tsx src/build.ts --input {{file}}
+
+# Watch and rebuild a specific MDX file
+watch-file file:
+    npx tsx src/build.ts --input {{file}} --watch
 
 # Clean build artifacts
 clean:

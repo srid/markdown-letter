@@ -70,9 +70,29 @@ The build system automatically includes the color classes - no other files need 
 ## Commands
 
 - `just build` - Build example.mdx
+- `just watch` - Watch and rebuild example.mdx with auto-refresh server
+- `just watch-file "file.mdx"` - Watch and rebuild a specific MDX file
 - `just new "Title"` - Create new letter
 - `just dev` - Full development workflow
 - `just help` - List all commands
+
+## Development
+
+For live development with auto-refresh:
+
+```bash
+# Watch example.mdx and serve at http://localhost:3000
+just watch
+
+# Watch a specific file
+just watch-file "my-letter.mdx"
+```
+
+The watch mode includes:
+- Automatic rebuilding when MDX files change
+- Development server at `http://localhost:3000`
+- Auto-refresh in browser when files are updated
+- Works with VSCode's built-in browser
 
 ## Milestones
 

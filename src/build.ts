@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { readFile, writeFile, mkdir } from 'fs/promises';
+import { readFile, writeFile, mkdir, watch } from 'fs/promises';
 import { join, dirname, basename, extname } from 'path';
 import { compile } from '@mdx-js/mdx';
 import { renderToString } from 'react-dom/server';
@@ -10,6 +10,8 @@ import { JSDOM } from 'jsdom';
 import postcss from 'postcss';
 import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
+import { createServer } from 'http';
+import { readFileSync, statSync } from 'fs';
 
 // Import components
 import { Quote } from './components/index.js';
@@ -43,8 +45,34 @@ async function buildCSS(): Promise<string> {
 function createHTMLTemplate(
   title: string,
   css: string,
-  body: string
+  body: string,
+  includeAutoRefresh: boolean = false
 ): string {
+  const autoRefreshScript = includeAutoRefresh ? `
+  <script>
+    // Auto-refresh for development
+    let lastModified = null;
+    
+    async function checkForUpdates() {
+      try {
+        const response = await fetch(window.location.href, { method: 'HEAD' });
+        const modified = response.headers.get('last-modified');
+        
+        if (lastModified && modified && modified !== lastModified) {
+          console.log('File updated, refreshing...');
+          window.location.reload();
+        }
+        lastModified = modified;
+      } catch (e) {
+        // Ignore fetch errors in auto-refresh
+      }
+    }
+    
+    // Check for updates every 1 second
+    setInterval(checkForUpdates, 1000);
+    checkForUpdates();
+  </script>` : '';
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,7 +81,7 @@ function createHTMLTemplate(
   <title>${title}</title>
   <style>
     ${css}
-  </style>
+  </style>${autoRefreshScript}
 </head>
 <body>
   <div class="letter-container">
@@ -65,7 +93,7 @@ function createHTMLTemplate(
 </html>`;
 }
 
-async function buildHTML(inputPath: string, outputPath: string): Promise<void> {
+async function buildHTML(inputPath: string, outputPath: string, includeAutoRefresh: boolean = false): Promise<void> {
   try {
     // Read and parse MDX file
     const mdxSource = await readFile(inputPath, 'utf-8');
@@ -101,7 +129,7 @@ async function buildHTML(inputPath: string, outputPath: string): Promise<void> {
     
     // Create final HTML
     const title = basename(inputPath, extname(inputPath));
-    const html = createHTMLTemplate(title, css, bodyHTML);
+    const html = createHTMLTemplate(title, css, bodyHTML, includeAutoRefresh);
     
     // Ensure output directory exists
     await mkdir(dirname(outputPath), { recursive: true });
@@ -116,20 +144,84 @@ async function buildHTML(inputPath: string, outputPath: string): Promise<void> {
   }
 }
 
+function startDevServer(outputPath: string, port: number = 3000): void {
+  const server = createServer((req, res) => {
+    if (req.url === '/' || req.url === `/${basename(outputPath)}`) {
+      try {
+        const stats = statSync(outputPath);
+        const content = readFileSync(outputPath, 'utf-8');
+        
+        res.writeHead(200, {
+          'Content-Type': 'text/html',
+          'Last-Modified': stats.mtime.toUTCString(),
+          'Cache-Control': 'no-cache'
+        });
+        res.end(content);
+      } catch (error) {
+        res.writeHead(404);
+        res.end('HTML file not found');
+      }
+    } else {
+      res.writeHead(404);
+      res.end('Not found');
+    }
+  });
+  
+  server.listen(port, () => {
+    console.log(`🌐 Dev server running at http://localhost:${port}`);
+    console.log(`📄 View your letter at http://localhost:${port}/${basename(outputPath)}`);
+  });
+}
+
+async function watchAndBuild(inputPath: string, outputPath: string): Promise<void> {
+  console.log(`👀 Watching ${inputPath} for changes...`);
+  
+  // Initial build with auto-refresh enabled
+  await buildHTML(inputPath, outputPath, true);
+  
+  // Start dev server
+  startDevServer(outputPath);
+  
+  try {
+    const watcher = watch(inputPath);
+    
+    for await (const event of watcher) {
+      if (event.eventType === 'change') {
+        console.log(`🔄 File changed, rebuilding...`);
+        try {
+          await buildHTML(inputPath, outputPath, true);
+        } catch (error) {
+          console.error('❌ Build failed:', error);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('❌ Watch error:', error);
+  }
+}
+
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const isWatch = args.includes('--watch');
   
-  if (isWatch) {
-    console.log('👀 Watch mode not implemented yet. Run without --watch for now.');
-    return;
+  // Check for --input flag
+  const inputIndex = args.findIndex(arg => arg === '--input');
+  let inputPath: string;
+  
+  if (inputIndex !== -1 && args[inputIndex + 1]) {
+    inputPath = args[inputIndex + 1];
+  } else {
+    inputPath = join(process.cwd(), 'example.mdx');
   }
   
-  // Default: build example.mdx if it exists
-  const inputPath = join(process.cwd(), 'example.mdx');
-  const outputPath = join(process.cwd(), 'dist', 'example.html');
+  const filename = basename(inputPath, extname(inputPath));
+  const outputPath = join(process.cwd(), 'dist', `${filename}.html`);
   
-  await buildHTML(inputPath, outputPath);
+  if (isWatch) {
+    await watchAndBuild(inputPath, outputPath);
+  } else {
+    await buildHTML(inputPath, outputPath);
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
