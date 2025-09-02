@@ -1,0 +1,137 @@
+/* * A clean, compact, and colorful CSS stylesheet for Pandoc-generated HTML emails.
+ *
+ * How to use with Pandoc:
+ * pandoc my_email.md -o email.html --standalone --css style.css
+ *
+ * For best results in email, embed the CSS directly:
+ * pandoc my_email.md -o email.html --standalone --self-contained
+ */
+
+/* --- General Body Styles --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 15px; /* Slightly smaller for compactness */
+    line-height: 1.5; /* Reduced line height */
+    color: #2c3e50; /* Softer black for text */
+    background-color: #fdfdfd;
+    margin: 0 auto;
+    padding: 15px;
+    max-width: 650px; /* A comfortable reading width for emails */
+}
+
+/* --- Headings --- */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 1.2em;
+    margin-bottom: 0.6em;
+    font-weight: 600;
+    line-height: 1.1;
+    color: #2980b9; /* Primary color for headings */
+}
+
+h1 { font-size: 1.7em; }
+h2 { font-size: 1.4em; }
+h3 { font-size: 1.2em; }
+h4 { font-size: 1.1em; }
+h5 { font-size: 1.0em; }
+h6 { font-size: 0.9em; color: #7f8c8d; }
+
+/* --- Paragraphs and Links --- */
+p {
+    margin-top: 0;
+    margin-bottom: 0.8em;
+}
+
+a {
+    color: #3498db; /* A slightly brighter blue for links */
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #217dbb;
+}
+
+/* --- Lists --- */
+ul, ol {
+    padding-left: 1.8em; /* Tighter list indentation */
+    margin-top: 0;
+    margin-bottom: 0.8em;
+}
+
+li {
+    margin-bottom: 0.2em; /* Reduced space between list items */
+}
+
+/* --- Blockquotes --- */
+blockquote {
+    margin-left: 1em;
+    padding: 0.5em 1em;
+    border-left: 4px solid #3498db; /* Accent border */
+    color: #34495e;
+    background-color: #ecf0f1; /* Light background for emphasis */
+    border-radius: 4px;
+}
+
+blockquote p {
+    margin-bottom: 0.5em;
+}
+
+/* --- Code Blocks and Inline Code --- */
+code {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 0.85em;
+    background-color: #e8eaed;
+    color: #3d3d3d;
+    border-radius: 4px;
+    padding: 3px 5px;
+}
+
+pre {
+    background-color: #e8eaed;
+    border: 1px solid #d1d5da;
+    border-radius: 4px;
+    padding: 0.8em 1em;
+    overflow-x: auto;
+    line-height: 1.35;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+    font-size: 100%; /* Reset inline code size within a pre block */
+    color: inherit;
+}
+
+/* --- Horizontal Rule --- */
+hr {
+    border: 0;
+    border-top: 1px solid #bdc3c7;
+    margin: 1.5em 0;
+}
+
+/* --- Footnotes --- */
+.footnotes {
+    margin-top: 1.5em;
+    font-size: 0.85em;
+    color: #7f8c8d; /* Muted color for footnotes */
+}
+
+.footnotes hr {
+    margin-top: 0;
+    margin-bottom: 1em;
+}
+
+.footnotes ol {
+    padding-left: 1.5em;
+}
+
+/* Makes the footnote reference number less obtrusive */
+a.footnote-ref {
+    text-decoration: none;
+}
+
+/* Hides the underline on the return arrow */
+a.footnote-back {
+    text-decoration: none;
+}
+
+
